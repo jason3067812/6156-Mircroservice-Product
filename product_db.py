@@ -13,6 +13,7 @@ class Products:
         pass
 
 
+    @staticmethod
     def _get_connection():
 
         conn = pymysql.connect(
@@ -25,6 +26,7 @@ class Products:
         return conn
 
 
+    @staticmethod
     def get_products():
 
         sql = "SELECT * FROM " + TABLE_NAME;
@@ -35,7 +37,8 @@ class Products:
         result = cur.fetchone()
         return result
 
-
+    
+    @staticmethod
     def get_product_by_id(self, product_id):
 
         sql = "SELECT * FROM " + TABLE_NAME + " WHERE id=%s";
@@ -47,6 +50,7 @@ class Products:
         return result
 
 
+    @staticmethod
     def add_product(self, name, description, price, inventory, image):
 
         sql = "INSERT INTO " + TABLE_NAME + " VALUES (%s, %s, %f, %s, %s)";
@@ -58,6 +62,7 @@ class Products:
         return result
 
 
+    @staticmethod
     def update_product(self, product_id, name, description, price, inventory, image):
         
         sql = "UPDATE " + TABLE_NAME + " SET name=%s, description=%s, price=%s, inventory=%s, image=%s WHERE id=%d";
@@ -69,6 +74,7 @@ class Products:
         return result
 
 
+    @staticmethod
     def delete_product(self, product_id):
 
         sql = "DELETE FROM " + TABLE_NAME + " WHERE id=%d";
