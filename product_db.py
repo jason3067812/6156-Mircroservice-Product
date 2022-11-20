@@ -2,9 +2,9 @@ import pymysql
 
 
 USER = "admin"
-PASSWORD = "dbuserdbuser"
-HOST = "db1.cyl4xx6wpuab.us-east-1.rds.amazonaws.com"
-TABLE_NAME = "f22_databases.product"
+PASSWORD = "eric30678"
+HOST = "test.cvwwgxdyhdlt.us-east-2.rds.amazonaws.com"
+TABLE_NAME = "project.product"
 
 
 class Products:
