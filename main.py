@@ -13,6 +13,19 @@ app = Flask(__name__,
 CORS(app)
 
 
+@app.route("/", methods=['GET'])
+def test():
+    print("testing")
+    result = {
+        "success": True,
+    }
+    if result:
+        resp = Response(json.dumps(result), status=200, content_type="application.json")
+    else:
+        resp = Response("NOT FOUND", status=404, content_type="text/plain")
+    return resp
+
+
 @app.route("/get_products", methods=['GET'])
 def get_products():
     print("get products")
@@ -69,4 +82,4 @@ def delete_product(id):
 
 
 if __name__ == "__main__":
-    app.run(port=5011, debug=True)
+    app.run(host="0.0.0.0", port=5011, debug=True)
