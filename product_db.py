@@ -37,7 +37,7 @@ class Products:
         result = cur.fetchone()
         return result
 
-    
+
     @staticmethod
     def get_product_by_id(self, product_id):
 
