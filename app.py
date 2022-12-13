@@ -12,9 +12,12 @@ application.secret_key = 'cc6156-ms-product'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # development
-DB_HOST, DB_PORT = 'localhost', 3306
-DB_NAME = 'ms_product'
-DB_USERNAME, DB_PASSWORD = 'root', 'root'
+# DB_HOST, DB_PORT = 'localhost', 3306
+# DB_NAME = 'ms_product'
+# DB_USERNAME, DB_PASSWORD = 'root', 'root'
+DB_HOST, DB_PORT = "test.cvwwgxdyhdlt.us-east-2.rds.amazonaws.com", 3306
+DB_NAME = 'project'
+DB_USERNAME, DB_PASSWORD = 'admin', 'eric30678'
 
 # production
 # DB_HOST = os.environ['DB_HOST']
