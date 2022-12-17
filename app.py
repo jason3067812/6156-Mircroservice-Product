@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_migrate import Migrate
 from flask_cors import CORS
 from sqlalchemy import desc, asc
@@ -43,6 +43,10 @@ cartSchema = CartSchema()
 cartItemSchema = CartItemSchema()
 orderSchema = OrderSchema()
 orderItemSchema = OrderItemSchema()
+
+@application.route('/api/docs', methods=['GET'])
+def get_docs():
+    return render_template('/swaggerui.html')
 
 @application.route("/api", methods=['GET'])
 def index():
