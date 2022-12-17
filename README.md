@@ -20,5 +20,5 @@ flask db upgrade
 
 ## Run the application
 ```shell
-flask --debug run
+flask --debug run -h 0.0.0.0
 ```
