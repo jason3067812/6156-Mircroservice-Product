@@ -41,7 +41,11 @@ cartItemSchema = CartItemSchema()
 orderSchema = OrderSchema()
 orderItemSchema = OrderItemSchema()
 
-@application.route("/products", methods=['GET'])
+@application.route("/api", methods=['GET'])
+def index():
+    return "product service"
+
+@application.route("/api/products", methods=['GET'])
 def products():
     args = request.args
     products = Product.query
@@ -64,7 +68,7 @@ def products():
     )
 
 
-@application.route("/products", methods=['POST'])
+@application.route("/api/products", methods=['POST'])
 def create_product():
     data = request.json
     name = data['name']
@@ -85,8 +89,35 @@ def create_product():
         status=200
     )
 
+@application.route('/api/products/<int:id>', methods=['DELETE'])
+def delete(id):
+    product = Product.query.filter_by(id=id).first()
+    if product:
+        db.session.delete(product)
+        db.session.commit()
 
-@application.route("/products/<category>", methods=['GET'])
+    return jsonify(
+        message=f"delete product",
+        status=200
+    )
+
+@application.route('/api/products/<int:id>', methods=['POST'])
+def update(id):
+    data = request.json
+    product = Product.query.filter_by(id=id).first()
+    for key, value in data.items():
+        setattr(product, key, value)
+    db.session.commit()
+
+    return jsonify(
+        message=f"update product",
+        data=productSchema.dump(obj=product),
+        status=200
+    )
+
+
+
+@application.route("/api/products/<category>", methods=['GET'])
 def search_by_category(category):
     products = Product.query.filter(Product.category == category).all()
     return jsonify(
@@ -96,7 +127,7 @@ def search_by_category(category):
         status=200
     )
 
-@application.route("/products/search", methods=['GET'])
+@application.route("/api/products/search", methods=['GET'])
 def search():
     args = request.args
     print(args)
@@ -127,7 +158,7 @@ def search():
         status=200
     )
 
-@application.route("/cart", methods=['POST'])
+@application.route("/api/cart", methods=['POST'])
 def createCart():
     data = request.json
     user_id = data['user_id']
@@ -145,7 +176,7 @@ def createCart():
         status=201
     )
 
-@application.route("/cart/<user_id>", methods=['GET'])
+@application.route("/api/cart/<user_id>", methods=['GET'])
 def getCart(user_id):
     cart = Cart.query.filter_by(user_id=user_id).first()
     items = []
@@ -164,7 +195,7 @@ def getCart(user_id):
     )
 
 
-@application.route("/cart/item", methods=['POST'])
+@application.route("/api/cart/item", methods=['POST'])
 def createCartItem():
     data = request.json
     product_id = data['product_id']
@@ -183,7 +214,7 @@ def createCartItem():
         status=200
     )
 
-@application.route("/cart/item/<id>", methods=['POST'])
+@application.route("/api/cart/item/<id>", methods=['POST'])
 def updateCartItem(id):
     data = request.json
     item = CartItem.query.filter_by(id=id).first()
@@ -196,7 +227,7 @@ def updateCartItem(id):
         status=200
     )
 
-@application.route('/cart/item/<int:id>', methods=['DELETE'])
+@application.route('/api/cart/item/<int:id>', methods=['DELETE'])
 def deleteCartItem(id):
     item = CartItem.query.filter_by(id=id).first()
     db.session.delete(item)
@@ -207,7 +238,7 @@ def deleteCartItem(id):
         status=200
     )
 
-@application.route("/orders", methods=['POST'])
+@application.route("/api/orders", methods=['POST'])
 def createOrder():
     data = request.json
     user_id = data['user_id']
@@ -225,7 +256,7 @@ def createOrder():
         status=200
     )
 
-@application.route("/orders/<id>", methods=['GET'])
+@application.route("/api/orders/<id>", methods=['GET'])
 def getOrder(id):
     order = Order.query.filter_by(id=id).first()
     items = []
@@ -242,7 +273,7 @@ def getOrder(id):
         status=200
     )
 
-@application.route("/orders/<id>", methods=['POST'])
+@application.route("/api/orders/<id>", methods=['POST'])
 def updateOrder(id):
     data = request.json
     order = Order.query.filter_by(id=id).first()
@@ -256,7 +287,7 @@ def updateOrder(id):
         status=200
     )
 
-@application.route("/orders", methods=['GET'])
+@application.route("/api/orders", methods=['GET'])
 def orders():
     user_id = request.args['user_id']
     os = Order.query.filter_by(user_id=user_id).all()
@@ -274,7 +305,7 @@ def orders():
     )
 
 
-@application.route("/orders/item/<id>", methods=['POST'])
+@application.route("/api/orders/item/<id>", methods=['POST'])
 def updateOrderItem(id):
     data = request.json
     item = OrderItem.query.filter_by(id=id).first()
@@ -287,7 +318,7 @@ def updateOrderItem(id):
         status=200
     )
 
-@application.route('/orders/item/<int:id>', methods=['DELETE'])
+@application.route('/api/orders/item/<int:id>', methods=['DELETE'])
 def deleteOrdertem(id):
     item = OrderItem.query.filter_by(id=id).first()
     db.session.delete(item)
