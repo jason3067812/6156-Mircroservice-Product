@@ -49,6 +49,14 @@ def index():
 def products():
     args = request.args
     products = Product.query
+    if 'provider_id' in args:
+        page = request.args.get('page', type=int, default=1)
+        products = get_profucts_by_provider(int(args['provider_id']), page)
+        return jsonify(
+            message=f"list products of given provider",
+            data=productSchema.dump(obj=products, many=True),
+            status=200
+        )
     if 'category' in args:
         products = products.filter(Product.category == args['category'])
     if 'onsale' in args and args['onsale'] == 'true':
@@ -66,6 +74,10 @@ def products():
         count=len(products),
         status=200
     )
+
+def get_profucts_by_provider(provider_id, page):
+    products = Product.query.filter(Product.provider_id == provider_id)
+    return products.paginate(page=page, per_page=5, error_out=False)
 
 
 @application.route("/api/products", methods=['POST'])
@@ -86,11 +98,21 @@ def create_product():
     return jsonify(
         message=f"create a product",
         data=productSchema.dump(obj=p),
+        status=201
+    )
+
+@application.route('/api/products/<int:id>', methods=['GET'])
+def get_product(id):
+    product = Product.query.filter_by(id=id).first()
+
+    return jsonify(
+        message=f"get product",
+        data=productSchema.dump(obj=product),
         status=200
     )
 
 @application.route('/api/products/<int:id>', methods=['DELETE'])
-def delete(id):
+def delete_product(id):
     product = Product.query.filter_by(id=id).first()
     if product:
         db.session.delete(product)
@@ -102,7 +124,7 @@ def delete(id):
     )
 
 @application.route('/api/products/<int:id>', methods=['POST'])
-def update(id):
+def update_product(id):
     data = request.json
     product = Product.query.filter_by(id=id).first()
     for key, value in data.items():
@@ -114,6 +136,22 @@ def update(id):
         data=productSchema.dump(obj=product),
         status=200
     )
+
+# @application.route('/api/products/<int:id>/lambda', methods=['POST'])
+# def update(id):
+#     print(request)
+#     import
+#     data = json.loads(request.text)
+#     product = Product.query.filter_by(id=id).first()
+#     for key, value in data.items():
+#         setattr(product, key, value)
+#     db.session.commit()
+#
+#     return jsonify(
+#         message=f"update product",
+#         data=productSchema.dump(obj=product),
+#         status=200
+#     )
 
 
 
