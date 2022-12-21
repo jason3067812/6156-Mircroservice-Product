@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_migrate import Migrate
 from flask_cors import CORS
 from sqlalchemy import desc, asc
@@ -12,9 +12,12 @@ application.secret_key = 'cc6156-ms-product'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # development
-DB_HOST, DB_PORT = 'localhost', 3306
-DB_NAME = 'ms_product'
-DB_USERNAME, DB_PASSWORD = 'root', 'root'
+# DB_HOST, DB_PORT = 'localhost', 3306
+# DB_NAME = 'ms_product'
+# DB_USERNAME, DB_PASSWORD = 'root', 'root'
+DB_HOST, DB_PORT = "test.cvwwgxdyhdlt.us-east-2.rds.amazonaws.com", 3306
+DB_NAME = 'project'
+DB_USERNAME, DB_PASSWORD = 'admin', 'eric30678'
 
 # production
 # DB_HOST = os.environ['DB_HOST']
@@ -40,6 +43,10 @@ cartSchema = CartSchema()
 cartItemSchema = CartItemSchema()
 orderSchema = OrderSchema()
 orderItemSchema = OrderItemSchema()
+
+@application.route('/api/docs', methods=['GET'])
+def get_docs():
+    return render_template('/swaggerui.html')
 
 @application.route("/api", methods=['GET'])
 def index():

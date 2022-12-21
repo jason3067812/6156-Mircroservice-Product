@@ -59,6 +59,51 @@ def get_products():
     return resp
 
 
+@app.route("/products/search", methods=['GET'])
+def search_products():
+    """Example endpoint: get products
+    This endpoint get all the product information.
+    ---
+    definitions:
+      Products:
+        type: array
+        items:
+          type: object
+          properties:
+            product_id:
+              type: integer
+              required: true
+            name:
+              type: string
+              required: true
+            description:
+              type: string
+              required: true
+            price:
+              type: number
+              required: true
+            inventory:
+              type: integer
+              required: true
+            image:
+              type: string
+              required: true
+    responses:
+      200:
+        description: The status of deletion
+        schema:
+          $ref: '#/definitions/Products'
+        examples:
+          success: true
+    """
+    result = Products.get_products()
+    if result:
+        resp = Response(json.dumps(result), status=200, content_type="application.json")
+    else:
+        resp = Response("NOT FOUND", status=404, content_type="text/plain")
+    return resp
+
+
 @app.route("/get_product/<id>", methods=['GET'])
 def get_product_by_id(id):
     """Example endpoint: get product by id
@@ -269,4 +314,4 @@ def delete_product(product_id):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5011, debug=True)
+    app.run(host="0.0.0.0", port=5012, debug=True)

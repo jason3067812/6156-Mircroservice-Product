@@ -1,0 +1,548 @@
+openapi: 3.0.3
+info:
+  version: 0.0.1
+  title: Microservice - Product API document
+  description: |-
+    This is the API document of Product Microservice based on the OpenAPI 3.0 specification
+      - Product
+      - Cart
+      - Order
+servers:
+  - url: https://13.58.156.142:5000
+paths:
+  /products:
+    get:
+      tags:
+        - products
+      summary: Get all products
+      description: 'Get all products'
+      operationId: productsGet
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsGetResp'
+    post:
+      tags:
+        - products
+      summary: Add a new product
+      description: Add a new product
+      operationId: productsPost
+      requestBody:
+        description: Add a new product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productsPostReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsGetResp'
+  /products/<category>:
+    get:
+      tags:
+        - products
+      summary: Get products by category
+      description: Get products by category
+      operationId: productsCategory
+      parameters:
+        - name: category
+          in: query
+          description: Product category
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsGetResp'
+  /products/search:
+    get:
+      tags:
+        - products
+      summary: Search products
+      description: Search products
+      operationId: productsSearch
+      parameters:
+        - name: category
+          in: query
+          description: Category
+          required: false
+          schema:
+            type: string
+        - name: discount
+          in: query
+          description: Discount
+          required: false
+          schema:
+            type: number
+            format: float
+        - name: stock
+          in: query
+          description: Stock
+          required: false
+          schema:
+            type: integer
+        - name: ordering
+          in: query
+          description: Ordering
+          required: false
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: page
+          in: query
+          description: Page
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsGetResp'
+  /cart:
+    post:
+      tags:
+        - cart
+      summary: Create cart
+      description: Create cart
+      operationId: cartPost
+      requestBody:
+        description: Create cart
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartPostReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartPostResp'
+  /cart/{user_id}:
+    get:
+      tags:
+        - cart
+      summary: User cart
+      description: Multiple status values can be provided with comma separated strings
+      operationId: cartGet
+      parameters:
+        - name: user_id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cartUserGetResp'
+  /cart/item:
+    post:
+      tags:
+        - cart
+      summary: Add a new item to the cart
+      description: Add a new item to the cart
+      operationId: cartItemPost
+      requestBody:
+        description: Add a new item to the cart
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemPostReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemPostResp'
+  /cart/item/{id}:
+    post:
+      tags:
+        - cart
+      summary: Update cart item
+      description: Update cart item
+      operationId: cartItemIdPost
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Update cart item
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemUpdateReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemPostResp'
+    delete:
+      tags:
+        - cart
+      summary: Deletes a cart item
+      description: delete a cart item
+      operationId: cartItemDelete
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: Create an new order
+      description: Create an new order
+      operationId: ordersPost
+      requestBody:
+        description: Create an new order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdersPostReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemPostResp'
+  /orders/{id}:
+    post:
+      tags:
+        - orders
+      summary: Update order
+      description: Update order
+      parameters:
+        - name: id
+          in: path
+          description: Order id
+          required: true
+          schema:
+            type: integer
+      operationId: ordersIdPost
+      requestBody:
+        description: Update order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderPostReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemPostResp'
+    get:
+      tags:
+        - orders
+      summary: Get order
+      description: Get order
+      parameters:
+        - name: id
+          in: path
+          description: Order id
+          required: true
+          schema:
+            type: integer
+      operationId: ordersIdGet
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderResp'
+  /orders/item/{id}:
+    post:
+      tags:
+        - orders
+      summary: Update order item
+      description: Update order item
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+      operationId: ordersItemIdPost
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderItemPostReq'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemPostResp'
+    delete:
+      tags:
+        - orders
+      summary: Delete order item
+      description: Delete order item
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+      operationId: ordersItemIdDelete
+      responses:
+        '200':
+          description: Successful operation
+components:
+  schemas:
+    ProductsGetResp:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+          example: 11.11
+        stock:
+          type: integer
+          example: 10
+        image:
+          type: string
+          example: "https://image.png"
+        category:
+          type: string
+        discount:
+          type: number
+          format: float
+          example: 11.11
+        provider_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      xml:
+        name: products
+    productsPostReq:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+          example: 11.11
+        stock:
+          type: integer
+          example: 10
+        image:
+          type: string
+          example: "https://image.png"
+        category:
+          type: string
+        discount:
+          type: number
+          format: float
+          example: 11.11
+        provider_id:
+          type: integer
+          example: 1
+      xml:
+        name: products
+    CartPostReq:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          example: 1
+    CartPostResp:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        user_id:
+          type: integer
+          format: int64
+          example: 1
+        total_price:
+          type: number
+          format: float
+          example: 11.11
+    cartUserGetResp:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+              price:
+                type: number
+                format: float
+                example: 11.11
+              quantity:
+                type: integer
+        count:
+          type: integer
+          format: int64
+          example: 1
+        total_price:
+          type: number
+          format: float
+          example: 11.11
+    CartItemPostReq:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          format: int64
+          example: 1
+        quantity:
+          type: integer
+          format: int64
+          example: 2
+    CartItemPostResp:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        quantity:
+          type: integer
+          format: int64
+          example: 2
+        product_id:
+          type: integer
+          format: int64
+          example: 1
+        cart_id:
+          type: integer
+          format: int64
+          example: 1
+    CartItemUpdateReq:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          example: 2
+    OrdersPostReq:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          example: 1
+    UpdateOrderPostReq:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int64
+        address_id:
+          type: integer
+          format: int64
+    GetOrderResp:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                example: 1
+              name:
+                type: string
+              price:
+                type: integer
+                format: float
+                example: 11.11
+              image:
+                type: string
+              quantity:
+                type: integer
+                format: int64
+        status:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: float
+          example: 11.11
+    UpdateOrderItemPostReq:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int64
+        address_id:
+          type: integer
+          format: int64
